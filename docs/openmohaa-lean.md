@@ -9,8 +9,9 @@ Copy `misc/openmohaa-lean.cfg` into your `baseq3` game directory, then enter
 `exec openmohaa-lean.cfg` in the console. Put that command in `autoexec.cfg`
 if you want the keys loaded on each launch. The binds apply only to your local
 config. Shift leans left, Space leans right, F jumps, C toggles between running
-and walking, and X crouches. The config also selects the rebuilt native game,
-cgame, and UI modules and sets `cg_fov` to 80 degrees at 4:3; install the
+and walking, X crouches, and K toggles the first-person weapon model. Picking
+up weapons leaves your selected gun unchanged. The config also selects the
+rebuilt native game, cgame, and UI modules and sets `cg_fov` to 80 degrees at 4:3; install the
 modules in the active `baseq3` game directory. Local matches use `sv_pure 0`
 so the matching native cgame can load. As in OpenMoHAA, the horizontal FOV
 adjusts to the viewport's aspect ratio while preserving the 4:3 vertical
@@ -33,6 +34,9 @@ rate before `vid_restart` (for example, `r_displayRefresh 240`). To fill a
 local free-for-all match with four bots plus yourself, set `bot_minplayers 5`.
 If the FPS counter (`cg_drawFPS 1`) stays below the display rate, the OpenGL 1
 renderer can be selected with `cl_renderer opengl1` followed by `vid_restart`.
+If fullscreen looks unusually dark while f.lux is running, set
+`r_ignorehwgamma 1` and `r_overBrightBits 0`, then restart the video or game.
+This avoids the display gamma ramp used for hardware overbright.
 
 The movement equations and parameters are from OpenMoHAA's Allied Assault
 multiplayer profile: 40-degree maximum, 10 approach factor, 15 recovery
