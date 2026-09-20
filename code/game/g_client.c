@@ -1032,6 +1032,21 @@ void ClientBegin( int clientNum ) {
 	CalculateRanks();
 }
 
+void G_GrantLocalArsenal( gentity_t *ent ) {
+	int weapon;
+
+	if ( !g_localArsenal.integer || g_dedicated.integer ||
+		!ent->client->pers.localClient || ( ent->r.svFlags & SVF_BOT ) ||
+		ent->client->sess.sessionTeam == TEAM_SPECTATOR || ent->health <= 0 ) {
+		return;
+	}
+
+	for ( weapon = WP_GAUNTLET; weapon < WP_NUM_WEAPONS; weapon++ ) {
+		ent->client->ps.stats[STAT_WEAPONS] |= 1 << weapon;
+		ent->client->ps.ammo[weapon] = -1;
+	}
+}
+
 /*
 ===========
 ClientSpawn
@@ -1206,10 +1221,15 @@ void ClientSpawn(gentity_t *ent) {
 			client->ps.weaponstate = WEAPON_READY;
 			// fire the targets of the spawn point
 			G_UseTargets(spawnPoint, ent);
+			G_GrantLocalArsenal(ent);
 			// select the highest weapon number available, after any spawn given items have fired
 			client->ps.weapon = 1;
 
 			for (i = WP_NUM_WEAPONS - 1 ; i > 0 ; i--) {
+				if (i == WP_GRAPPLING_HOOK && g_localArsenal.integer &&
+					client->pers.localClient) {
+					continue;
+				}
 				if (client->ps.stats[STAT_WEAPONS] & (1 << i)) {
 					client->ps.weapon = i;
 					break;

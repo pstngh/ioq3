@@ -25,6 +25,7 @@ jobs:
       - name: Package client and native game modules
         run: |
           cp misc/openmohaa-lean.cfg build/Release/baseq3/
+          cp misc/openmohaa-lean.cfg build/Release/missionpack/
           tar -C build/Release -czf ioq3-linux-x64.tar.gz .
       - uses: actions/upload-artifact@v4
         with:
@@ -48,6 +49,7 @@ jobs:
         shell: pwsh
         run: |
           Copy-Item misc/openmohaa-lean.cfg build/Release/baseq3/
+          Copy-Item misc/openmohaa-lean.cfg build/Release/missionpack/
           Compress-Archive -Path build/Release/* -DestinationPath ioq3-windows-x64.zip
       - uses: actions/upload-artifact@v4
         with:
@@ -71,6 +73,7 @@ jobs:
       - name: Package client and native game modules
         run: |
           cp misc/openmohaa-lean.cfg build/Release/baseq3/
+          cp misc/openmohaa-lean.cfg build/Release/missionpack/
           tar -C build/Release -czf ioq3-macos-arm64.tar.gz .
       - uses: actions/upload-artifact@v4
         with:

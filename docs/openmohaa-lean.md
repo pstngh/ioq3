@@ -19,6 +19,13 @@ and HUD retain their proportions instead of stretching across a wide screen.
 Set `cg_drawviewmodel 0` to hide your first-person weapon without hiding other
 players' weapons. Set it back to `2` to show the weapon again.
 
+The config sets mouse sensitivity to `1.029863` and enables `g_localArsenal 1`.
+In local matches, your player spawns with every weapon and infinite ammo, and
+keeps both through respawns and pickups. Bots retain their normal loadouts.
+Quake III has no magazine or reload action; its infinite-ammo state prevents
+the ammo count from falling when you fire. Set `g_localArsenal 0` to disable
+this for future spawns.
+
 For 1920x1080 fullscreen, set `r_mode -1`, `r_customwidth 1920`,
 `r_customheight 1080`, and `r_fullscreen 1`, then run `vid_restart`.
 For a high-refresh display, set `r_displayRefresh` to its supported refresh

@@ -836,6 +836,7 @@ void ClientThink_real( gentity_t *ent ) {
 	} else {
 		client->ps.pm_type = PM_NORMAL;
 	}
+	G_GrantLocalArsenal(ent);
 
 	client->ps.gravity = g_gravity.value;
 
