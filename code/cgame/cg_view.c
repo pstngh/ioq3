@@ -403,6 +403,9 @@ static void CG_OffsetFirstPersonView( void ) {
 
 	// add bob height
 	bob = cg.bobfracsin * cg.xyspeed * cg_bobup.value;
+	if ( cg.predictedPlayerState.leanAngle ) {
+		bob *= 0.75f;
+	}
 	if (bob > 6) {
 		bob = 6;
 	}
@@ -423,6 +426,20 @@ static void CG_OffsetFirstPersonView( void ) {
 
 	// add step offset
 	CG_StepOffset();
+
+	if ( cg.predictedPlayerState.leanAngle ) {
+		vec3_t leanOffset, leanEnd, mins, maxs;
+		trace_t trace;
+
+		BG_LeanViewOffset( &cg.predictedPlayerState, leanOffset );
+		VectorAdd( origin, leanOffset, leanEnd );
+		VectorSet( mins, -6, -6, -6 );
+		VectorSet( maxs, 6, 6, 6 );
+		CG_Trace( &trace, origin, mins, maxs, leanEnd,
+			cg.predictedPlayerState.clientNum, MASK_SOLID );
+		VectorCopy( trace.endpos, origin );
+		angles[ROLL] += cg.predictedPlayerState.leanAngle * 0.4f;
+	}
 
 	// pivot the eye based on a neck length
 #if 0
