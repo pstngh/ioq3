@@ -1903,7 +1903,11 @@ static void CG_DrawCrosshair(void)
 
 	x = cg_crosshairX.integer;
 	y = cg_crosshairY.integer;
-	CG_AdjustFrom640( &x, &y, &w, &h );
+	// These are offsets from the viewport center, so do not add the HUD bias.
+	x *= cgs.screenXScale;
+	y *= cgs.screenYScale;
+	w *= cgs.screenXScale;
+	h *= cgs.screenYScale;
 
 	ca = cg_drawCrosshair.integer;
 	if (ca < 0) {
@@ -2653,6 +2657,5 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 	// draw status bar and other floating elements
  	CG_Draw2D(stereoView);
 }
-
 
 
