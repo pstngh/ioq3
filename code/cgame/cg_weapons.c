@@ -1377,7 +1377,7 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 
 
 	// allow the gun to be completely removed
-	if ( !cg_drawGun.integer ) {
+	if ( !cg_drawGun.integer || cg_drawViewModel.integer <= 0 ) {
 		vec3_t		origin;
 
 		if ( cg.predictedPlayerState.eFlags & EF_FIRING ) {

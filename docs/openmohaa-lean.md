@@ -16,12 +16,16 @@ so the matching native cgame can load. As in OpenMoHAA, the horizontal FOV
 adjusts to the viewport's aspect ratio while preserving the 4:3 vertical
 view: 80 degrees at 4:3 becomes about 96.42 degrees at 16:9. The native UI
 and HUD retain their proportions instead of stretching across a wide screen.
+Set `cg_drawviewmodel 0` to hide your first-person weapon without hiding other
+players' weapons. Set it back to `2` to show the weapon again.
 
 For 1920x1080 fullscreen, set `r_mode -1`, `r_customwidth 1920`,
 `r_customheight 1080`, and `r_fullscreen 1`, then run `vid_restart`.
 For a high-refresh display, set `r_displayRefresh` to its supported refresh
 rate before `vid_restart` (for example, `r_displayRefresh 240`). To fill a
 local free-for-all match with four bots plus yourself, set `bot_minplayers 5`.
+If the FPS counter (`cg_drawFPS 1`) stays below the display rate, the OpenGL 1
+renderer can be selected with `cl_renderer opengl1` followed by `vid_restart`.
 
 The movement equations and parameters are from OpenMoHAA's Allied Assault
 multiplayer profile: 40-degree maximum, 10 approach factor, 15 recovery
