@@ -1,4 +1,5 @@
 build*
+!/.github/workflows/build.yml
 *.swp
 *tags
 *~
