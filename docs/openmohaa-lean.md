@@ -36,9 +36,14 @@ weapon damage. Change `g_botHealth` in the console to choose another spawn HP
 For 1920x1080 fullscreen, set `r_mode -1`, `r_customwidth 1920`,
 `r_customheight 1080`, and `r_fullscreen 1`, then run `vid_restart`.
 For a high-refresh display, set `r_displayRefresh` to its supported refresh
-rate before `vid_restart` (for example, `r_displayRefresh 240`). To fill a
-local free-for-all match with five bots plus yourself, set `bot_enable 1` and
-`bot_minplayers 6`. The config sets both automatically.
+rate before `vid_restart` (for example, `r_displayRefresh 240`).
+
+To fill a local free-for-all or single-player match with five bots plus yourself, set
+`bot_enable 1` and `bot_minplayers 6`. The config sets both automatically.
+`ui_unlockAllLevels 1` makes every campaign tier selectable without changing
+saved scores. Other installed maps are available through the Skirmish/Create
+Game menu; choose the map's game type, such as CTF for capture-the-flag maps.
+
 If the FPS counter (`cg_drawFPS 1`) stays below the display rate, the OpenGL 1
 renderer can be selected with `cl_renderer opengl1` followed by `vid_restart`.
 If fullscreen looks unusually dark while f.lux is running, set

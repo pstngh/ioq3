@@ -473,7 +473,7 @@ void G_CheckMinimumPlayers( void ) {
 			}
 		}
 	}
-	else if (g_gametype.integer == GT_FFA) {
+	else if (g_gametype.integer == GT_FFA || g_gametype.integer == GT_SINGLE_PLAYER) {
 		if (minplayers >= g_maxclients.integer) {
 			minplayers = g_maxclients.integer-1;
 		}
@@ -482,7 +482,7 @@ void G_CheckMinimumPlayers( void ) {
 		//
 		if (humanplayers + botplayers < minplayers) {
 			G_AddRandomBot( TEAM_FREE );
-		} else if (humanplayers + botplayers > minplayers && botplayers) {
+		} else if (g_gametype.integer == GT_FFA && humanplayers + botplayers > minplayers && botplayers) {
 			G_RemoveRandomBot( TEAM_FREE );
 		}
 	}

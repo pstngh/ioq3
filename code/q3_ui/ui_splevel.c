@@ -119,6 +119,10 @@ static int	finalTier;
 static int	minTier;
 static int	maxTier;
 
+static qboolean UI_SPLevelMenu_TierLocked( void ) {
+	return selectedArenaSet > currentSet && !trap_Cvar_VariableValue( "ui_unlockAllLevels" );
+}
+
 
 /*
 =================
@@ -169,9 +173,10 @@ static void UI_SPLevelMenu_SetBots( void ) {
 	char	*bot;
 	char	*botInfo;
 	char	bots[MAX_INFO_STRING];
+	int		targetBots;
 
 	levelMenuInfo.numBots = 0;
-	if ( selectedArenaSet > currentSet ) {
+	if ( UI_SPLevelMenu_TierLocked() ) {
 		return;
 	}
 
@@ -215,6 +220,16 @@ static void UI_SPLevelMenu_SetBots( void ) {
 		Q_CleanStr( levelMenuInfo.botNames[levelMenuInfo.numBots] );
 		levelMenuInfo.numBots++;
 	}
+
+	// Show the extra opponents that bot_minplayers adds to local matches.
+	if ( trap_Cvar_VariableValue( "bot_enable" ) ) {
+		targetBots = trap_Cvar_VariableValue( "bot_minplayers" ) - 1;
+		while ( levelMenuInfo.numBots < targetBots && levelMenuInfo.numBots < 7 ) {
+			levelMenuInfo.botPics[levelMenuInfo.numBots] = 0;
+			Q_strncpyz( levelMenuInfo.botNames[levelMenuInfo.numBots], "RANDOM", sizeof(levelMenuInfo.botNames[0]) );
+			levelMenuInfo.numBots++;
+		}
+	}
 }
 
 
@@ -241,7 +256,7 @@ static void UI_SPLevelMenu_SetMenuArena( int n, int level, const char *arenaInfo
 		strcpy( levelMenuInfo.levelPicNames[n], ART_MAP_UNKNOWN );
 	}
 	levelMenuInfo.item_maps[n].shader = 0;
-	if ( selectedArenaSet > currentSet ) {
+	if ( UI_SPLevelMenu_TierLocked() ) {
 		levelMenuInfo.item_maps[n].generic.flags |= QMF_GRAYED;
 	}
 	else {
@@ -256,7 +271,7 @@ static void UI_SPLevelMenu_SetMenuItems( void ) {
 	int			level;
 	const char	*arenaInfo;
 
-	if ( selectedArenaSet > currentSet ) {
+	if ( UI_SPLevelMenu_TierLocked() ) {
 		selectedArena = -1;
 	}
 	else if ( selectedArena == -1 ) {
@@ -490,7 +505,7 @@ static void UI_SPLevelMenu_NextEvent( void* ptr, int notification ) {
 		return;
 	}
 
-	if ( selectedArenaSet > currentSet ) {
+	if ( UI_SPLevelMenu_TierLocked() ) {
 		return;
 	}
 
@@ -613,7 +628,7 @@ static void UI_SPLevelMenu_MenuDraw( void ) {
 		UI_FillRect( x, y + 96, 128, 18, color_black );
 	}
 
-	if ( selectedArenaSet > currentSet ) {
+	if ( UI_SPLevelMenu_TierLocked() ) {
 		UI_DrawProportionalString( 320, 216, "ACCESS DENIED", UI_CENTER|UI_BIGFONT, color_red );
 		return;
 	}
