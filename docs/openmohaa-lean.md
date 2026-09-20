@@ -10,7 +10,8 @@ Copy `misc/openmohaa-lean.cfg` into your `baseq3` game directory, then enter
 if you want the keys loaded on each launch. The binds apply only to your local
 config. Shift leans left, Space leans right, F jumps, C toggles between running
 and walking, and X crouches. The config also selects the rebuilt native game
-and cgame modules; install those in the active `baseq3` game directory.
+and cgame modules and sets horizontal FOV to 80 degrees; install the modules in
+the active `baseq3` game directory.
 
 The movement equations and parameters are from OpenMoHAA's Allied Assault
 multiplayer profile: 40-degree maximum, 10 approach factor, 15 recovery
