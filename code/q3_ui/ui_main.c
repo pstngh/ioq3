@@ -125,6 +125,7 @@ vmCvar_t	ui_spVideos;
 vmCvar_t	ui_spSkill;
 
 vmCvar_t	ui_spSelection;
+static vmCvar_t	ui_unlockAllLevels;
 
 vmCvar_t	ui_browserMaster;
 vmCvar_t	ui_browserGameType;
@@ -184,6 +185,7 @@ static cvarTable_t		cvarTable[] = {
 	{ &ui_spSkill, "g_spSkill", "2", CVAR_ARCHIVE | CVAR_LATCH },
 
 	{ &ui_spSelection, "ui_spSelection", "", CVAR_ROM },
+	{ &ui_unlockAllLevels, "ui_unlockAllLevels", "0", CVAR_ARCHIVE },
 
 	{ &ui_browserMaster, "ui_browserMaster", "1", CVAR_ARCHIVE },
 	{ &ui_browserGameType, "ui_browserGameType", "0", CVAR_ARCHIVE },

@@ -250,6 +250,7 @@ static void CG_InterpolatePlayerState( qboolean grabAngles ) {
 		out->velocity[i] = prev->ps.velocity[i] + 
 			f * (next->ps.velocity[i] - prev->ps.velocity[i] );
 	}
+	out->leanAngle = prev->ps.leanAngle + f * ( next->ps.leanAngle - prev->ps.leanAngle );
 
 }
 
@@ -453,6 +454,7 @@ void CG_PredictPlayerState( void ) {
 		cg_pmove.tracemask &= ~CONTENTS_BODY;	// spectators can fly through bodies
 	}
 	cg_pmove.noFootsteps = ( cgs.dmflags & DF_NO_FOOTSTEPS ) > 0;
+	cg_pmove.allowLean = qtrue;
 
 	// save the state before the pmove so we can detect transitions
 	oldPlayerState = cg.predictedPlayerState;

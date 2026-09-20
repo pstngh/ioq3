@@ -689,6 +689,16 @@ static void ClientCleanName(const char *in, char *out, int outSize)
 }
 
 
+static int G_BotMaxHealth( gentity_t *ent, int defaultHealth ) {
+	if ( !(ent->r.svFlags & SVF_BOT) || g_botHealth.integer <= 0 ) {
+		return defaultHealth;
+	}
+	if ( g_botHealth.integer > 10000 ) {
+		return 10000;
+	}
+	return g_botHealth.integer;
+}
+
 /*
 ===========
 ClientUserInfoChanged
@@ -770,7 +780,7 @@ void ClientUserinfoChanged( int clientNum ) {
 		client->pers.maxHealth = 100;
 	}
 #endif
-	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
+	client->ps.stats[STAT_MAX_HEALTH] = G_BotMaxHealth( ent, client->pers.maxHealth );
 
 	// set model
 	if( g_gametype.integer >= GT_TEAM ) {
@@ -1032,6 +1042,27 @@ void ClientBegin( int clientNum ) {
 	CalculateRanks();
 }
 
+qboolean G_LocalGodModeEnabled( gentity_t *ent ) {
+	return g_localGodMode.integer && !g_dedicated.integer && ent && ent->client &&
+		ent->client->pers.localClient && !( ent->r.svFlags & SVF_BOT ) &&
+		ent->client->sess.sessionTeam != TEAM_SPECTATOR;
+}
+
+void G_GrantLocalArsenal( gentity_t *ent ) {
+	int weapon;
+
+	if ( !g_localArsenal.integer || g_dedicated.integer ||
+		!ent->client->pers.localClient || ( ent->r.svFlags & SVF_BOT ) ||
+		ent->client->sess.sessionTeam == TEAM_SPECTATOR || ent->health <= 0 ) {
+		return;
+	}
+
+	for ( weapon = WP_GAUNTLET; weapon < WP_NUM_WEAPONS; weapon++ ) {
+		ent->client->ps.stats[STAT_WEAPONS] |= 1 << weapon;
+		ent->client->ps.ammo[weapon] = -1;
+	}
+}
+
 /*
 ===========
 ClientSpawn
@@ -1144,7 +1175,7 @@ void ClientSpawn(gentity_t *ent) {
 		client->pers.maxHealth = 100;
 	}
 	// clear entity values
-	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
+	client->ps.stats[STAT_MAX_HEALTH] = G_BotMaxHealth( ent, client->pers.maxHealth );
 	client->ps.eFlags = flags;
 
 	ent->s.groundEntityNum = ENTITYNUM_NONE;
@@ -1158,6 +1189,9 @@ void ClientSpawn(gentity_t *ent) {
 	ent->waterlevel = 0;
 	ent->watertype = 0;
 	ent->flags = 0;
+	if ( G_LocalGodModeEnabled( ent ) ) {
+		ent->flags |= FL_GODMODE;
+	}
 	
 	VectorCopy (playerMins, ent->r.mins);
 	VectorCopy (playerMaxs, ent->r.maxs);
@@ -1175,8 +1209,11 @@ void ClientSpawn(gentity_t *ent) {
 	client->ps.ammo[WP_GAUNTLET] = -1;
 	client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
 
-	// health will count down towards max_health
+	// Normal spawns get 25 overhealth; configured bots start at exact health.
 	ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] + 25;
+	if ( (ent->r.svFlags & SVF_BOT) && g_botHealth.integer > 0 ) {
+		ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH];
+	}
 
 	G_SetOrigin( ent, spawn_origin );
 	VectorCopy( spawn_origin, client->ps.origin );
@@ -1206,10 +1243,15 @@ void ClientSpawn(gentity_t *ent) {
 			client->ps.weaponstate = WEAPON_READY;
 			// fire the targets of the spawn point
 			G_UseTargets(spawnPoint, ent);
+			G_GrantLocalArsenal(ent);
 			// select the highest weapon number available, after any spawn given items have fired
 			client->ps.weapon = 1;
 
 			for (i = WP_NUM_WEAPONS - 1 ; i > 0 ; i--) {
+				if (i == WP_GRAPPLING_HOOK && g_localArsenal.integer &&
+					client->pers.localClient) {
+					continue;
+				}
 				if (client->ps.stats[STAT_WEAPONS] & (1 << i)) {
 					client->ps.weapon = i;
 					break;

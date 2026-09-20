@@ -31,6 +31,21 @@ static	vec3_t	muzzle;
 
 #define NUM_NAILSHOTS 15
 
+static void G_OffsetLeanMuzzle( gentity_t *ent, vec3_t muzzlePoint ) {
+	vec3_t offset, end, mins, maxs;
+	trace_t trace;
+
+	if ( !ent->client->ps.leanAngle ) {
+		return;
+	}
+	BG_LeanViewOffset( &ent->client->ps, offset );
+	VectorAdd( muzzlePoint, offset, end );
+	VectorSet( mins, -6, -6, -6 );
+	VectorSet( maxs, 6, 6, 6 );
+	trap_Trace( &trace, muzzlePoint, mins, maxs, end, ent->s.number, MASK_SOLID );
+	VectorCopy( trace.endpos, muzzlePoint );
+}
+
 /*
 ================
 G_BounceProjectile
@@ -772,6 +787,7 @@ set muzzle location relative to pivoting eye
 void CalcMuzzlePoint ( gentity_t *ent, vec3_t localForward, vec3_t localRight, vec3_t localUp, vec3_t muzzlePoint ) {
 	VectorCopy( ent->s.pos.trBase, muzzlePoint );
 	muzzlePoint[2] += ent->client->ps.viewheight;
+	G_OffsetLeanMuzzle( ent, muzzlePoint );
 	VectorMA( muzzlePoint, 14, localForward, muzzlePoint );
 	// snap to integer coordinates for more efficient network bandwidth usage
 	SnapVector( muzzlePoint );
@@ -787,6 +803,7 @@ set muzzle location relative to pivoting eye
 void CalcMuzzlePointOrigin ( gentity_t *ent, vec3_t origin, vec3_t localForward, vec3_t localRight, vec3_t localUp, vec3_t muzzlePoint ) {
 	VectorCopy( ent->s.pos.trBase, muzzlePoint );
 	muzzlePoint[2] += ent->client->ps.viewheight;
+	G_OffsetLeanMuzzle( ent, muzzlePoint );
 	VectorMA( muzzlePoint, 14, localForward, muzzlePoint );
 	// snap to integer coordinates for more efficient network bandwidth usage
 	SnapVector( muzzlePoint );

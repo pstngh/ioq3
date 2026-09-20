@@ -403,6 +403,9 @@ static void CG_OffsetFirstPersonView( void ) {
 
 	// add bob height
 	bob = cg.bobfracsin * cg.xyspeed * cg_bobup.value;
+	if ( cg.predictedPlayerState.leanAngle ) {
+		bob *= 0.75f;
+	}
 	if (bob > 6) {
 		bob = 6;
 	}
@@ -423,6 +426,20 @@ static void CG_OffsetFirstPersonView( void ) {
 
 	// add step offset
 	CG_StepOffset();
+
+	if ( cg.predictedPlayerState.leanAngle ) {
+		vec3_t leanOffset, leanEnd, mins, maxs;
+		trace_t trace;
+
+		BG_LeanViewOffset( &cg.predictedPlayerState, leanOffset );
+		VectorAdd( origin, leanOffset, leanEnd );
+		VectorSet( mins, -6, -6, -6 );
+		VectorSet( maxs, 6, 6, 6 );
+		CG_Trace( &trace, origin, mins, maxs, leanEnd,
+			cg.predictedPlayerState.clientNum, MASK_SOLID );
+		VectorCopy( trace.endpos, origin );
+		angles[ROLL] += cg.predictedPlayerState.leanAngle * 0.4f;
+	}
 
 	// pivot the eye based on a neck length
 #if 0
@@ -475,6 +492,7 @@ static int CG_CalcFov( void ) {
 	float	fov_x, fov_y;
 	float	zoomFov;
 	float	f;
+	float	fov_ratio;
 	int		inwater;
 
 	if ( cg.predictedPlayerState.pm_type == PM_INTERMISSION ) {
@@ -515,6 +533,13 @@ static int CG_CalcFov( void ) {
 				fov_x = zoomFov + f * ( fov_x - zoomFov );
 			}
 		}
+	}
+
+	// Match OpenMoHAA: cg_fov is the horizontal FOV at 4:3, and wider
+	// viewports keep the same vertical FOV by expanding the horizontal FOV.
+	fov_ratio = (float)cg.refdef.width / (float)cg.refdef.height * ( 3.0f / 4.0f );
+	if ( fov_ratio != 1.0f ) {
+		fov_x = atan( tan( fov_x * M_PI / 360.0f ) * fov_ratio ) * 360.0f / M_PI;
 	}
 
 	x = cg.refdef.width / tan( fov_x / 360 * M_PI );

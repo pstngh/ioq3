@@ -570,6 +570,8 @@ void ClientRespawn(gentity_t *ent);
 void BeginIntermission (void);
 void InitBodyQue (void);
 void ClientSpawn( gentity_t *ent );
+void G_GrantLocalArsenal( gentity_t *ent );
+qboolean G_LocalGodModeEnabled( gentity_t *ent );
 void player_die (gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod);
 void AddScore( gentity_t *ent, vec3_t origin, int score );
 void CalculateRanks( void );
@@ -695,6 +697,9 @@ extern	gentity_t		g_entities[MAX_GENTITIES];
 #define	FOFS(x) ((size_t)&(((gentity_t *)0)->x))
 
 extern	vmCvar_t	g_gametype;
+extern	vmCvar_t	g_localArsenal;
+extern	vmCvar_t	g_localGodMode;
+extern	vmCvar_t	g_botHealth;
 extern	vmCvar_t	g_dedicated;
 extern	vmCvar_t	g_cheats;
 extern	vmCvar_t	g_maxclients;			// allow this many total, including spectators

@@ -258,6 +258,10 @@ void IN_Button10Down(void) {IN_KeyDown(&in_buttons[10]);}
 void IN_Button10Up(void) {IN_KeyUp(&in_buttons[10]);}
 void IN_Button11Down(void) {IN_KeyDown(&in_buttons[11]);}
 void IN_Button11Up(void) {IN_KeyUp(&in_buttons[11]);}
+void IN_LeanLeftDown(void) {IN_KeyDown(&in_buttons[12]);}
+void IN_LeanLeftUp(void) {IN_KeyUp(&in_buttons[12]);}
+void IN_LeanRightDown(void) {IN_KeyDown(&in_buttons[13]);}
+void IN_LeanRightUp(void) {IN_KeyUp(&in_buttons[13]);}
 void IN_Button12Down(void) {IN_KeyDown(&in_buttons[12]);}
 void IN_Button12Up(void) {IN_KeyUp(&in_buttons[12]);}
 void IN_Button13Down(void) {IN_KeyDown(&in_buttons[13]);}
@@ -958,6 +962,10 @@ void CL_InitInput( void ) {
 	Cmd_AddCommand ("-moveright", IN_MoverightUp);
 	Cmd_AddCommand ("+speed", IN_SpeedDown);
 	Cmd_AddCommand ("-speed", IN_SpeedUp);
+	Cmd_AddCommand ("+leanleft", IN_LeanLeftDown);
+	Cmd_AddCommand ("-leanleft", IN_LeanLeftUp);
+	Cmd_AddCommand ("+leanright", IN_LeanRightDown);
+	Cmd_AddCommand ("-leanright", IN_LeanRightUp);
 	Cmd_AddCommand ("+attack", IN_Button0Down);
 	Cmd_AddCommand ("-attack", IN_Button0Up);
 	Cmd_AddCommand ("+button0", IN_Button0Down);
@@ -1035,6 +1043,10 @@ void CL_ShutdownInput(void)
 	Cmd_RemoveCommand("-moveright");
 	Cmd_RemoveCommand("+speed");
 	Cmd_RemoveCommand("-speed");
+	Cmd_RemoveCommand("+leanleft");
+	Cmd_RemoveCommand("-leanleft");
+	Cmd_RemoveCommand("+leanright");
+	Cmd_RemoveCommand("-leanright");
 	Cmd_RemoveCommand("+attack");
 	Cmd_RemoveCommand("-attack");
 	Cmd_RemoveCommand("+button0");

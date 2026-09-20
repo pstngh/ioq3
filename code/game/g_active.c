@@ -836,6 +836,10 @@ void ClientThink_real( gentity_t *ent ) {
 	} else {
 		client->ps.pm_type = PM_NORMAL;
 	}
+	G_GrantLocalArsenal(ent);
+	if ( G_LocalGodModeEnabled( ent ) ) {
+		ent->flags |= FL_GODMODE;
+	}
 
 	client->ps.gravity = g_gravity.value;
 
@@ -917,6 +921,7 @@ void ClientThink_real( gentity_t *ent ) {
 	pm.pointcontents = trap_PointContents;
 	pm.debugLevel = g_debugMove.integer;
 	pm.noFootsteps = ( g_dmflags.integer & DF_NO_FOOTSTEPS ) > 0;
+	pm.allowLean = !( ent->r.svFlags & SVF_BOT );
 
 	pm.pmove_fixed = pmove_fixed.integer | client->pers.pmoveFixed;
 	pm.pmove_msec = pmove_msec.integer;

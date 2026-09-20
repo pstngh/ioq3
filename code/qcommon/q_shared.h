@@ -1181,6 +1181,7 @@ typedef struct playerState_s {
 
 	vec3_t		viewangles;		// for fixed views
 	int			viewheight;
+	float		leanAngle;		// OpenMoHAA-style signed lean angle (degrees)
 
 	// damage feedback
 	int			damageEvent;	// when it changes, latch the other parms
@@ -1230,6 +1231,8 @@ typedef struct playerState_s {
 #define BUTTON_FOLLOWME		1024
 
 #define	BUTTON_ANY			2048			// any key whatsoever
+#define BUTTON_LEAN_LEFT	4096
+#define BUTTON_LEAN_RIGHT	8192
 
 #define	MOVE_RUN			120			// if forwardmove or rightmove are >= MOVE_RUN,
 										// then BUTTON_WALKING should be set

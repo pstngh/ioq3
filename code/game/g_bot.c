@@ -415,17 +415,23 @@ G_CheckMinimumPlayers
 void G_CheckMinimumPlayers( void ) {
 	int minplayers;
 	int humanplayers, botplayers;
+	int checkInterval;
 	static int checkminimumplayers_time;
 
 	if (level.intermissiontime) return;
-	//only check once each 10 seconds
-	if (checkminimumplayers_time > level.time - 10000) {
+	// Fill local matches promptly, while retaining the dedicated-server interval.
+	checkInterval = g_dedicated.integer ? 10000 : 1000;
+	if (checkminimumplayers_time > level.time) {
+		checkminimumplayers_time = 0;
+	}
+	if (checkminimumplayers_time > level.time - checkInterval) {
 		return;
 	}
 	checkminimumplayers_time = level.time;
 	trap_Cvar_Update(&bot_minplayers);
 	minplayers = bot_minplayers.integer;
 	if (minplayers <= 0) return;
+	if (!g_dedicated.integer && !G_CountHumanPlayers(-1)) return;
 
 	if (g_gametype.integer >= GT_TEAM) {
 		if (minplayers >= g_maxclients.integer / 2) {
@@ -467,7 +473,7 @@ void G_CheckMinimumPlayers( void ) {
 			}
 		}
 	}
-	else if (g_gametype.integer == GT_FFA) {
+	else if (g_gametype.integer == GT_FFA || g_gametype.integer == GT_SINGLE_PLAYER) {
 		if (minplayers >= g_maxclients.integer) {
 			minplayers = g_maxclients.integer-1;
 		}
@@ -476,7 +482,7 @@ void G_CheckMinimumPlayers( void ) {
 		//
 		if (humanplayers + botplayers < minplayers) {
 			G_AddRandomBot( TEAM_FREE );
-		} else if (humanplayers + botplayers > minplayers && botplayers) {
+		} else if (g_gametype.integer == GT_FFA && humanplayers + botplayers > minplayers && botplayers) {
 			G_RemoveRandomBot( TEAM_FREE );
 		}
 	}

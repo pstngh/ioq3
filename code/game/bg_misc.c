@@ -1484,6 +1484,7 @@ void BG_PlayerStateToEntityState( playerState_t *ps, entityState_t *s, qboolean 
 
 	s->apos.trType = TR_INTERPOLATE;
 	VectorCopy( ps->viewangles, s->apos.trBase );
+	s->apos.trBase[ROLL] = ps->leanAngle;
 	if ( snap ) {
 		SnapVector( s->apos.trBase );
 	}
@@ -1564,6 +1565,7 @@ void BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 
 	s->apos.trType = TR_INTERPOLATE;
 	VectorCopy( ps->viewangles, s->apos.trBase );
+	s->apos.trBase[ROLL] = ps->leanAngle;
 	if ( snap ) {
 		SnapVector( s->apos.trBase );
 	}

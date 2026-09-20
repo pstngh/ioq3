@@ -1449,6 +1449,8 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 	}
 
 	// --------- roll -------------
+	// OpenMoHAA puts most of a player's lean into the torso.
+	torsoAngles[ROLL] = headAngles[ROLL] * 0.7f;
 
 
 	// lean towards the direction of travel

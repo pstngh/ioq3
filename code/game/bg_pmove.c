@@ -47,6 +47,85 @@ float	pm_spectatorfriction = 5.0f;
 
 int		c_pmove = 0;
 
+// Allied Assault multiplayer lean parameters from OpenMoHAA.
+#define LEAN_MAX 40.0f
+#define LEAN_ADD 10.0f
+#define LEAN_RECOVER_SPEED 15.0f
+#define LEAN_SPEED 4.0f
+#define LEAN_PIVOT_HEIGHT 28.7f
+
+void BG_LeanViewOffset( const playerState_t *ps, vec3_t offset ) {
+	vec3_t angles, forward, pivot, rotated;
+
+	VectorClear( offset );
+	if ( !ps->leanAngle ) {
+		return;
+	}
+
+	VectorSet( angles, ps->viewangles[PITCH], ps->viewangles[YAW], 0 );
+	AngleVectors( angles, forward, NULL, NULL );
+	VectorSet( pivot, 0, 0, LEAN_PIVOT_HEIGHT );
+	RotatePointAroundVector( rotated, forward, pivot, ps->leanAngle );
+	VectorSubtract( rotated, pivot, offset );
+}
+
+static void PM_UpdateLean( void ) {
+	float angle, leanStep;
+	int buttons;
+
+	if ( !pm->allowLean || pm->ps->pm_type != PM_NORMAL ||
+		pm->ps->stats[STAT_HEALTH] <= 0 || ( pm->cmd.buttons & BUTTON_TALK ) ) {
+		pm->ps->leanAngle = 0;
+		return;
+	}
+
+	buttons = pm->cmd.buttons & ( BUTTON_LEAN_LEFT | BUTTON_LEAN_RIGHT );
+	if ( buttons && buttons != ( BUTTON_LEAN_LEFT | BUTTON_LEAN_RIGHT ) ) {
+		if ( buttons & BUTTON_LEAN_LEFT ) {
+			if ( pm->ps->leanAngle <= -LEAN_MAX ) {
+				pm->ps->leanAngle = -LEAN_MAX;
+			} else {
+				angle = pml.frametime * ( -LEAN_MAX - pm->ps->leanAngle ) * LEAN_ADD;
+				leanStep = pml.frametime * -LEAN_SPEED;
+				if ( angle <= leanStep ) {
+					leanStep = angle;
+				}
+				pm->ps->leanAngle += leanStep;
+			}
+		} else {
+			if ( pm->ps->leanAngle >= LEAN_MAX ) {
+				pm->ps->leanAngle = LEAN_MAX;
+			} else {
+				angle = LEAN_MAX - pm->ps->leanAngle;
+				// OpenMoHAA's right lean chooses this factor in both branches.
+				pm->ps->leanAngle += pml.frametime * angle * LEAN_ADD;
+			}
+		}
+	} else if ( pm->ps->leanAngle ) {
+		angle = pm->ps->leanAngle * pml.frametime * LEAN_RECOVER_SPEED;
+		if ( pm->ps->leanAngle <= 0 ) {
+			leanStep = pml.frametime * -LEAN_SPEED;
+			if ( leanStep >= angle ) {
+				leanStep = angle;
+			}
+			pm->ps->leanAngle -= leanStep;
+			if ( pm->ps->leanAngle > 0 ) {
+				pm->ps->leanAngle = 0;
+			}
+		} else {
+			leanStep = pml.frametime * LEAN_SPEED;
+			if ( leanStep <= angle ) {
+				leanStep = angle;
+			}
+			pm->ps->leanAngle -= leanStep;
+			if ( pm->ps->leanAngle < 0 ) {
+				pm->ps->leanAngle = 0;
+			}
+		}
+	}
+
+}
+
 
 /*
 ===============
@@ -1906,6 +1985,7 @@ void PmoveSingle (pmove_t *pmove) {
 	VectorCopy (pm->ps->velocity, pml.previous_velocity);
 
 	pml.frametime = pml.msec * 0.001;
+	PM_UpdateLean();
 
 	// update the viewangles
 	PM_UpdateViewAngles( pm->ps, &pm->cmd );
