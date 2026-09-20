@@ -1879,6 +1879,12 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	trap_GetGlconfig( &cgs.glconfig );
 	cgs.screenXScale = cgs.glconfig.vidWidth / 640.0;
 	cgs.screenYScale = cgs.glconfig.vidHeight / 480.0;
+	if ( cgs.glconfig.vidWidth * 480 > cgs.glconfig.vidHeight * 640 ) {
+		cgs.screenXBias = 0.5f * ( cgs.glconfig.vidWidth - cgs.glconfig.vidHeight * ( 640.0f / 480.0f ) );
+		cgs.screenXScale = cgs.screenYScale;
+	} else {
+		cgs.screenXBias = 0;
+	}
 
 	// get the gamestate from the client system
 	trap_GetGameState( &cgs.gameState );
