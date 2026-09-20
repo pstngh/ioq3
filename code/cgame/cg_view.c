@@ -492,6 +492,7 @@ static int CG_CalcFov( void ) {
 	float	fov_x, fov_y;
 	float	zoomFov;
 	float	f;
+	float	fov_ratio;
 	int		inwater;
 
 	if ( cg.predictedPlayerState.pm_type == PM_INTERMISSION ) {
@@ -532,6 +533,13 @@ static int CG_CalcFov( void ) {
 				fov_x = zoomFov + f * ( fov_x - zoomFov );
 			}
 		}
+	}
+
+	// Match OpenMoHAA: cg_fov is the horizontal FOV at 4:3, and wider
+	// viewports keep the same vertical FOV by expanding the horizontal FOV.
+	fov_ratio = (float)cg.refdef.width / (float)cg.refdef.height * ( 3.0f / 4.0f );
+	if ( fov_ratio != 1.0f ) {
+		fov_x = atan( tan( fov_x * M_PI / 360.0f ) * fov_ratio ) * 360.0f / M_PI;
 	}
 
 	x = cg.refdef.width / tan( fov_x / 360 * M_PI );

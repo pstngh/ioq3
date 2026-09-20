@@ -10,8 +10,14 @@ Copy `misc/openmohaa-lean.cfg` into your `baseq3` game directory, then enter
 if you want the keys loaded on each launch. The binds apply only to your local
 config. Shift leans left, Space leans right, F jumps, C toggles between running
 and walking, and X crouches. The config also selects the rebuilt native game
-and cgame modules and sets horizontal FOV to 80 degrees; install the modules in
-the active `baseq3` game directory.
+and cgame modules and sets `cg_fov` to 80 degrees at 4:3; install the modules
+in the active `baseq3` game directory. Local matches use `sv_pure 0` so the
+matching native cgame can load. As in OpenMoHAA, the horizontal FOV adjusts to
+the viewport's aspect ratio while preserving the 4:3 vertical view: 80 degrees
+at 4:3 becomes about 96.42 degrees at 16:9.
+
+For 1920x1080 fullscreen, set `r_mode -1`, `r_customwidth 1920`,
+`r_customheight 1080`, and `r_fullscreen 1`, then run `vid_restart`.
 
 The movement equations and parameters are from OpenMoHAA's Allied Assault
 multiplayer profile: 40-degree maximum, 10 approach factor, 15 recovery
