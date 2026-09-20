@@ -43,6 +43,7 @@ To fill a local free-for-all or single-player match with five bots plus yourself
 `ui_unlockAllLevels 1` makes every campaign tier selectable without changing
 saved scores. Other installed maps are available through the Skirmish/Create
 Game menu; choose the map's game type, such as CTF for capture-the-flag maps.
+Right click zooms without interrupting mouse aim.
 
 If the FPS counter (`cg_drawFPS 1`) stays below the display rate, the OpenGL 1
 renderer can be selected with `cl_renderer opengl1` followed by `vid_restart`.
