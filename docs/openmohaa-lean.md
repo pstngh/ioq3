@@ -27,11 +27,18 @@ Quake III has no magazine or reload action; its infinite-ammo state prevents
 the ammo count from falling when you fire. Set `g_localArsenal 0` to disable
 this for future spawns.
 
+`g_localGodMode 1` keeps the local human player immune to damage, including
+damage that bypasses Quake III's ordinary god-mode flag. Bots stay vulnerable.
+`g_botHealth 1000` gives each bot 1000 HP on spawn without increasing its
+weapon damage. Change `g_botHealth` in the console to choose another spawn HP
+(up to 10000); `0` restores normal bot health. New values apply on bot respawn.
+
 For 1920x1080 fullscreen, set `r_mode -1`, `r_customwidth 1920`,
 `r_customheight 1080`, and `r_fullscreen 1`, then run `vid_restart`.
 For a high-refresh display, set `r_displayRefresh` to its supported refresh
 rate before `vid_restart` (for example, `r_displayRefresh 240`). To fill a
-local free-for-all match with four bots plus yourself, set `bot_minplayers 5`.
+local free-for-all match with five bots plus yourself, set `bot_enable 1` and
+`bot_minplayers 6`. The config sets both automatically.
 If the FPS counter (`cg_drawFPS 1`) stays below the display rate, the OpenGL 1
 renderer can be selected with `cl_renderer opengl1` followed by `vid_restart`.
 If fullscreen looks unusually dark while f.lux is running, set

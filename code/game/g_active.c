@@ -837,6 +837,9 @@ void ClientThink_real( gentity_t *ent ) {
 		client->ps.pm_type = PM_NORMAL;
 	}
 	G_GrantLocalArsenal(ent);
+	if ( G_LocalGodModeEnabled( ent ) ) {
+		ent->flags |= FL_GODMODE;
+	}
 
 	client->ps.gravity = g_gravity.value;
 
